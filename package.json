@@ -13,14 +13,40 @@
   "keywords": [
     "texturepacker",
     "spritesheet",
-    "packer",
-    "nodejs",
-    "npm"
+    "texture",
+    "packer"
   ],
+  "xo": {
+    "esnext": true,
+    "env": [
+      "node",
+      "browser"
+    ],
+    "space": true,
+    "semicolon": false,
+    "rules": {
+      "curly": 0,
+      "keyword-spacing": 0,
+      "guard-for-in": 0
+    },
+    "globals": [
+      "Phaser",
+      "$"
+    ],
+    "ignores": [
+      "lib/MaxRectsBinPack.js"
+    ]
+  },
   "author": "aspirin2d",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/sleep2death/texturepacker-js/issues"
   },
-  "homepage": "https://github.com/sleep2death/texturepacker-js#readme"
+  "homepage": "https://github.com/sleep2death/texturepacker-js#readme",
+  "dependencies": {
+    "async": "^2.0.0",
+    "chalk": "^1.1.3",
+    "optimist": "^0.6.1",
+    "platform-command": "0.0.1"
+  }
 }
