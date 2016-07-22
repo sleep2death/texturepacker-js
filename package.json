@@ -1,0 +1,26 @@
+{
+  "name": "texturepacker-js",
+  "version": "1.0.0",
+  "description": "a texturepacker to pack all textures into one spritesheet",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sleep2death/texturepacker-js.git"
+  },
+  "keywords": [
+    "texturepacker",
+    "spritesheet",
+    "packer",
+    "nodejs",
+    "npm"
+  ],
+  "author": "aspirin2d",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sleep2death/texturepacker-js/issues"
+  },
+  "homepage": "https://github.com/sleep2death/texturepacker-js#readme"
+}
