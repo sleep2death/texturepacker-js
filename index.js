@@ -1,32 +1,38 @@
 'use strict'
 
-const optimist = require('optimist')
-const chalk = require('chalk')
+const fs = require('fs')
 const async = require('async')
 
-const trim = require('./lib/trim')
-const pack = require('./lib/pack')
+const configRole = require('./lib/role/config')
+const generateRole = require('./lib/role/generate')
 
-const argv = optimist.usage('Usage: $0 <input> [options] <output> ').demand(2).argv
+const generateNPC = require('./lib/npc/generate')
 
-const log = chalk.grey
-const error = chalk.red
+// const trim = require('./lib/trim')
+// const pack = require('./lib/packer')
+// const output = require('./lib/output')
+// const meta = require('./lib/meta')
 
-// read input&output from arguments
-const inputPath = argv._[0]
-const outputPath = argv._[1]
-const options = {}
+const PATH = 'svn/sprites'
+const PATH_OUTPUT = 'svn/sprites_output'
 
-console.log(log(`Packing images from ${inputPath} to ${outputPath}`))
-texturepack(inputPath, outputPath, options, null)
+console.log(`Packing images from ${PATH} to ${PATH_OUTPUT}`)
+// texturepack(inputPath, outputPath)
 
-function texturepack(input, outputPath, options, callback) {
-  async.waterfall([
-    function (cb) {
-      trim(input, cb)
-    },
-    function (files, cb) {
-      pack(files, cb)
+fs.readdir(PATH, (err, files) => {
+  if(err) throw err
+  async.eachSeries(files, (file, next) => {
+    if(fs.statSync(`${PATH}/${file}`).isDirectory() && file !== '.svn' && file !== 'npc' && file !== 'companion') {
+      configRole(file, PATH, PATH_OUTPUT, (caller, vo) => {
+        // generateRole(file, vo, next)
+        next()
+      })
+    }else if(file === 'npc') {
+      generateNPC(PATH, PATH_OUTPUT, file, next)
+    }else if(file === 'companion') {
+      next()
+    }else{
+      next()
     }
-  ], callback)
-}
+  })
+})
