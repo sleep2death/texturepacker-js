@@ -27,10 +27,8 @@ fs.readdir(PATH, (err, files) => {
         // generateRole(file, vo, next)
         next()
       })
-    }else if(file === 'npc') {
+    }else if(file === 'npc' || file === 'companion') {
       generateNPC(PATH, PATH_OUTPUT, file, next)
-    }else if(file === 'companion') {
-      next()
     }else{
       next()
     }
