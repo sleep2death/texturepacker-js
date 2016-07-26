@@ -2,23 +2,34 @@
 const async = require('async')
 
 const trim = require('./trim')
-const pack = require('./bin')
+const bin = require('./bin')
 const output = require('./output')
 const meta = require('./meta')
 
-module.exports = function texturepack(iDir, oDir, name, hasAlpha, callback) {
+/**
+ * walk through all png in the input folder, and pack them into one png
+ * with an extra 'alpha channel' for masking and color changing.
+ * @input {string} input files dir
+ * @option {object} options.output | options.name | options.hasAlpha
+ * @callback {function} callback function
+*/
+module.exports = function texturepack(input, options, callback) {
   async.waterfall([
     function (cb) {
-      trim(iDir, hasAlpha, cb)
+      trim(input, options.hasAlpha, cb)
     },
     function (files, cb) {
-      pack(files, cb)
+      bin(files, cb)
     },
     function (files, width, height, cb) {
-      output(files, {width, height, name, hasAlpha}, oDir, cb)
+      options.width = width
+      options.height = height
+
+      output(files, options, cb)
     },
     function (files, height, cb) {
-      meta(files, height, oDir, name, cb)
+      options.height = height // POT UPDATE
+      meta(files, options, cb)
     }
   ], callback)
 }

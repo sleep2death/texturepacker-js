@@ -4,7 +4,7 @@ const fs = require('fs')
 
 const yaml = require('js-yaml')
 
-module.exports = (files, height, output, name, callback) => {
+module.exports = (files, options, callback) => {
   const sprites = []
   files.forEach(file => {
     const sprite = {}
@@ -13,7 +13,7 @@ module.exports = (files, height, output, name, callback) => {
     sprite.rect = {
       serializedVersion: 2,
       x: file.x,
-      y: height - (file.y + file.h),
+      y: options.height - (file.y + file.h),
       width: file.w,
       height: file.h
     }
@@ -22,7 +22,7 @@ module.exports = (files, height, output, name, callback) => {
     sprites.push(sprite)
   })
 
-  fs.stat(`${output}/${name}.png.meta`, err => {
+  fs.stat(`${options.output}/${options.name}.png.meta`, err => {
     let doc = null
     if(err) {
       // meta file not exist
@@ -38,14 +38,14 @@ module.exports = (files, height, output, name, callback) => {
       }
     }else{
       try{
-        doc = yaml.safeLoad(fs.readFileSync(`${output}/${name}.png.meta`, 'utf-8'))
+        doc = yaml.safeLoad(fs.readFileSync(`${options.output}/${options.name}.png.meta`, 'utf-8'))
       } catch(err) {
         throw err
       }
     }
 
     doc.TextureImporter.spriteSheet.sprites = sprites
-    fs.writeFile(`${output}/${name}.png.meta`, yaml.safeDump(doc), err => {
+    fs.writeFile(`${options.output}/${options.name}.png.meta`, yaml.safeDump(doc), err => {
       if (err) {
         return console.log(err)
       }

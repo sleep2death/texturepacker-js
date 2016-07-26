@@ -119,7 +119,7 @@ function selectNPC(path) {
 }
 
 function packNPC(path, name, next) {
-  generateNPC(PATH, PATH_OUTPUT, path, name, () => {
+  generateNPC(PATH, PATH_OUTPUT, {npc: path, action: name}, () => {
     if(next) next()
   })
 }

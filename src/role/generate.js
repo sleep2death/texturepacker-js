@@ -76,7 +76,7 @@ module.exports = function generate(file, vo, cb) {
   })
 
   async.eachSeries(genList, (io, next) => {
-    pack(io.iDir, io.oDir, io.name, io.hasAlpha, next)
+    pack(io.iDir, {output: io.oDir, name: io.name, hasAlpha: io.hasAlpha}, next)
     bar.tick({input: io.iDir, output: io.oDir})
   }, cb)
 }

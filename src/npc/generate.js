@@ -9,14 +9,8 @@ const pack = require('../tp/packer')
 
 const ACTION = ['idle', 'run', 'attack', 'damage', 'death', 'defence', 'skill_magic']
 
-module.exports = (input, output, npc, name, callback) => {
-  /* fs.readdir(`${input}/${name}`, (err, files) => {
-    if(err) throw err
-    async.eachSeries(files, (file, next) => {
-      readDir(input, output, `${name}/${file}`, next)
-    }, callback)
-    })*/
-  readDir(input, output, `${npc}/${name}`, callback)
+module.exports = (input, output, option, callback) => {
+  readDir(input, output, `${option.npc}/${option.action}`, callback)
 }
 
 function readDir(root, output, path, callback) {
@@ -29,7 +23,7 @@ function readDir(root, output, path, callback) {
 
     async.eachSeries(files, (file, next) => {
       if(ACTION.indexOf(file) >= 0) {
-        createSprite(root, output, `${path}/${file}`, file, next)
+        createSprite(root, output, {path: `${path}/${file}`, name: file}, next)
 
         const p = /([npc|companion])\/(.+)/.exec(path)[2]
         bar.tick({input: `${root}/${path}`, output: `${output}/${p}/${file}`})
@@ -40,13 +34,13 @@ function readDir(root, output, path, callback) {
   })
 }
 
-function createSprite(root, output, path, name, next) {
-  const p = /([npc|companion])\/(.+)/.exec(path)[2]
+function createSprite(root, output, options, next) {
+  const p = /([npc|companion])\/(.+)/.exec(options.path)[2]
   mkdirp(`${output}/${p}`, err => {
     if(err) throw err
     mkdirp(`${output}/${p}/a`, error => {
       if(error) throw error
-      pack(`${root}/${path}`, `${output}/${p}`, name, false, next)
+      pack(`${root}/${options.path}`, {output: `${output}/${p}`, name: options.name, hasAlpha: false}, next)
     })
   })
 }

@@ -2,7 +2,7 @@
 
 const exec = require('platform-command').exec
 
-module.exports = (files, options, output, callback) => {
+module.exports = (files, options, callback) => {
   const canvasW = roundToPowerOfTwo(options.width)
   const canvasH = roundToPowerOfTwo(options.height)
   // input images
@@ -16,7 +16,7 @@ module.exports = (files, options, output, callback) => {
     command.push(`"${file.iPath}" -geometry ${offsetX}${offsetY} -composite`)
   })
 
-  command.push(`${output}/${options.name}.png`)
+  command.push(`${options.output}/${options.name}.png`)
 
   // input channel images
   if(options.hasAlpha) {
@@ -29,17 +29,17 @@ module.exports = (files, options, output, callback) => {
       command.push(`"${file.iPathA}" -geometry ${offsetX}${offsetY} -composite`)
     })
 
-    command.push(`${output}/a/${options.name}_a.png`)
+    command.push(`${options.output}/a/${options.name}_a.png`)
 
     // remove alpha channel from origin
-    command.push(`&& convert ${output}/${options.name}.png -background black -alpha remove ${output}/${options.name}.png`)
+    command.push(`&& convert ${options.output}/${options.name}.png -background black -alpha remove ${options.output}/${options.name}.png`)
   }else {
     // extract alpha channel from origin
-    command.push(`&& convert ${output}/${options.name}.png -alpha extract ${output}/a/${options.name}_a.png`)
+    command.push(`&& convert ${options.output}/${options.name}.png -alpha extract ${options.output}/a/${options.name}_a.png`)
     // replace it to green
-    command.push(`&& convert ${output}/a/${options.name}_a.png -background lime -alpha shape ${output}/a/${options.name}_a.png`)
+    command.push(`&& convert ${options.output}/a/${options.name}_a.png -background lime -alpha shape ${options.output}/a/${options.name}_a.png`)
     // delete alpha channel
-    command.push(`&& convert ${output}/a/${options.name}_a.png -background black -alpha remove ${output}/a/${options.name}_a.png`)
+    command.push(`&& convert ${options.output}/a/${options.name}_a.png -background black -alpha remove ${options.output}/a/${options.name}_a.png`)
   }
 
   files.forEach(file => {
