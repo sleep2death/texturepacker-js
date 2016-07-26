@@ -27,16 +27,6 @@ module.exports = (files, options, output, callback) => {
       const offsetY = file.fit.y - file.crop.y >= 0 ? `+${file.fit.y - file.crop.y}` : `-${Math.abs(file.fit.y - file.crop.y)}`
 
       command.push(`"${file.iPathA}" -geometry ${offsetX}${offsetY} -composite`)
-
-      file.x = file.fit.x
-      file.y = file.fit.y
-
-      // create anchor point
-      file.pX = ((file.crop.w * 0.5) - file.crop.x) / file.w
-      file.pY = (file.h - ((file.crop.h * 0.604) - file.crop.y)) / file.h
-
-      delete file.fit
-      delete file.crop
     })
 
     command.push(`${output}/a/${options.name}_a.png`)
@@ -47,8 +37,22 @@ module.exports = (files, options, output, callback) => {
     // extract alpha channel from origin
     command.push(`&& convert ${output}/${options.name}.png -alpha extract ${output}/a/${options.name}_a.png`)
     // replace it to green
-    command.push(`&& convert ${output}/a/${options.name}_a.png -background green -alpha shape ${output}/a/${options.name}_a.png`)
+    command.push(`&& convert ${output}/a/${options.name}_a.png -background lime -alpha shape ${output}/a/${options.name}_a.png`)
+    // delete alpha channel
+    command.push(`&& convert ${output}/a/${options.name}_a.png -background black -alpha remove ${output}/a/${options.name}_a.png`)
   }
+
+  files.forEach(file => {
+    file.x = file.fit.x
+    file.y = file.fit.y
+
+    // create pivot points
+    file.pX = ((file.crop.w * 0.5) - file.crop.x) / file.w
+    file.pY = (file.h - ((file.crop.h * 0.604) - file.crop.y)) / file.h
+
+    delete file.fit
+    delete file.crop
+  })
 
   exec(command.join(' '), err => {
     if(err) throw err

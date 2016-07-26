@@ -9,13 +9,14 @@ const pack = require('../tp/packer')
 
 const ACTION = ['idle', 'run', 'attack', 'damage', 'death', 'defence', 'skill_magic']
 
-module.exports = (input, output, name, callback) => {
-  fs.readdir(`${input}/${name}`, (err, files) => {
+module.exports = (input, output, npc, name, callback) => {
+  /* fs.readdir(`${input}/${name}`, (err, files) => {
     if(err) throw err
     async.eachSeries(files, (file, next) => {
       readDir(input, output, `${name}/${file}`, next)
     }, callback)
-  })
+    })*/
+  readDir(input, output, `${npc}/${name}`, callback)
 }
 
 function readDir(root, output, path, callback) {
