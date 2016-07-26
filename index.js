@@ -111,7 +111,8 @@ function selectNPC(path) {
           packNPC(path, file, next)
         })
       } else {
-        packNPC(path, answers.npcName)
+        packNPC(path, answers.npcName, () => {
+        })
       }
     })
   })
