@@ -10,7 +10,6 @@ const pack = require('../tp/packer')
 var hasAlpha = false // same pet has alpha channel
 
 const ACTION = ['idle', 'run', 'attack', 'damage', 'death', 'defence', 'skill_magic']
-const ACTION_A = ['idle_a', 'run_a', 'attack_a', 'damage_a', 'death_a', 'defence_a', 'skill_magic_a']
 
 module.exports = (input, output, option, callback) => {
   readDir(input, output, `${option.pet}/${option.action}`, callback)
@@ -30,40 +29,15 @@ function readDir(root, output, path, callback) {
         hasAlpha = false;
     }
 
-    /*
-	if(hasAlpha){
-		//包含Alpha通道的怪物
-		async.eachSeries(files, (file, next) => {
-		const p = /([pet])\/(.+)/.exec(path)[2]
-	    if(ACTION.indexOf(file) >= 0) {
-            createSprite(root, output, {path: `${path}/${file}`, name: file, hasAlpha: true, isAlpha: false}, next)	
-	        bar.tick({input: `${root}/${path}`, output: `${output}/${p}/${file}`})
-	    }else{
-	        next()
-	    }
-	    }, callback)
-	}else{
-		//不包含Alpha通道的怪物
-		async.eachSeries(files, (file, next) => {
-	    if(ACTION.indexOf(file) >= 0) {
-            createSprite(root, output, {path: `${path}/${file}`, name: file, hasAlpha: false, isAlpha: false}, next)	     
-            const p = /([pet])\/(.+)/.exec(path)[2]
-            bar.tick({input: `${root}/${path}`, output: `${output}/${p}/${file}`})
-	    }else{
-	        next()
-	    }
-	    }, callback)
-    }
-    */
-        async.eachSeries(files, (file, next) => {
-		const p = /([pet])\/(.+)/.exec(path)[2]
+    async.eachSeries(files, (file, next) => {
+	    const p = /([pet])\/(.+)/.exec(path)[2]
 	    if(ACTION.indexOf(file) >= 0) {
             createSprite(root, output, {path: `${path}/${file}`, name: file, hasAlpha: hasAlpha}, next)	
 	        bar.tick({input: `${root}/${path}`, output: `${output}/${p}/${file}`})
 	    }else{
 	        next()
 	    }
-	    }, callback)
+	}, callback)
 
   })
 }
