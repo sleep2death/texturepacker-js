@@ -23,7 +23,7 @@ module.exports = function generate(file, vo, cb) {
     const oDir = `${PATH_OUTPUT}/role_${file}/body/${key}` // output dir
     const iDir = `${PATH}/${file}/${reg.exec(vo.body[key])[1]}` // input dir
 
-      // create a folder for alpha channel if not existed
+    // create a folder for alpha channel if not existed
     try{
       fs.accessSync(`${oDir}/a`)
     }catch(err) {
