@@ -1,5 +1,6 @@
 'use strict'
 const fs = require('fs')
+const path = require('path')
 
 const exec = require('platform-command').exec
 
@@ -11,10 +12,7 @@ module.exports = (input, options, files, callback) => {
 
   // combine all images by packer's info
   files.forEach(file => {
-    const offsetX = (file.fit.x - file.crop.x) >= 0 ? `+${file.fit.x - file.crop.x}` : `-${Math.abs(file.fit.x - file.crop.x)}`
-    const offsetY = file.fit.y - file.crop.y >= 0 ? `+${file.fit.y - file.crop.y}` : `-${Math.abs(file.fit.y - file.crop.y)}`
-
-    command.push(`"${file.iPath}" -geometry ${offsetX}${offsetY} -composite`)
+    command.push(`"${file.path}" -geometry +${file.fit.x}+${file.fit.y} -composite`)
   })
 
   command.push(`${options.output}/${options.name}.png`)
@@ -41,11 +39,13 @@ module.exports = (input, options, files, callback) => {
     file.y = file.fit.y
 
     // create pivot points
-    file.pX = ((file.crop.w * 0.5) - file.crop.x) / file.w
-    file.pY = (file.h - ((file.crop.h * 0.604) - file.crop.y)) / file.h
+    file.pX = ((file.trim.w * 0.5) - file.trim.x) / file.w
+    file.pY = (file.h - ((file.trim.h * 0.604) - file.trim.y)) / file.h
+
+    file.name = path.basename(file.path)
 
     delete file.fit
-    delete file.crop
+    delete file.trim
   })
 
   exec(command.join(' '), err => {

@@ -10,7 +10,6 @@ module.exports = (files, callback) => {
   })
 
   packer.fit(files)
-
   callback(null, files, packer.root.w, packer.root.h)
 }
 
