@@ -12,7 +12,7 @@ const generateNPC = require('./src/npc/generate')
 const generatePet = require('./src/pet/generate')
 
 const PATH = 'svn/sprites'
-const PATH_OUTPUT = 'svn/sprites_output'
+const PATH_OUTPUT = 'svn/test_output'
 
 console.log(`Packing images from ${PATH} to ${PATH_OUTPUT}`)
 
@@ -42,6 +42,7 @@ inquirer.prompt(questions).then(answers => {
       break
     case 'pet':
       selectPet('pet')
+      break
     case 'all':
       break
     default:
@@ -85,8 +86,8 @@ function selectRole() {
 }
 
 function packRole(name, callback) {
-  configRole(name, PATH, PATH_OUTPUT, (caller, vo) => {
-    generateRole(name, vo, () => {
+  configRole(name, PATH, PATH_OUTPUT, () => {
+    generateRole(name, PATH, PATH_OUTPUT, () => {
       if(callback) callback()
     })
   })
