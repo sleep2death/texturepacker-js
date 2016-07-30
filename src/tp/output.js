@@ -5,14 +5,14 @@ const path = require('path')
 const exec = require('platform-command').exec
 
 module.exports = (input, options, files, callback) => {
-  const canvasW = roundToPowerOfTwo(options.width)
-  const canvasH = roundToPowerOfTwo(options.height)
+  options.width = roundToPowerOfTwo(options.width)
+  options.height = roundToPowerOfTwo(options.height)
   // input images
-  const command = [`convert -define png:exclude-chunks=date -size ${canvasW}x${canvasH} xc:none`]
+  const command = [`convert -define png:exclude-chunks=date -size ${options.width}x${options.height} xc:none`]
 
   // combine all images by packer's info
   files.forEach(file => {
-    command.push(`"${file.path}" -geometry +${file.fit.x}+${file.fit.y} -composite`)
+    command.push(`"${file.path}" -geometry +${file.x}+${file.y} -composite`)
   })
 
   command.push(`${options.output}/${options.name}.png`)
@@ -35,22 +35,20 @@ module.exports = (input, options, files, callback) => {
   command.push(`&& convert ${options.output}/${options.name}.png -background black -alpha remove ${options.output}/${options.name}.png`)
 
   files.forEach(file => {
-    file.x = file.fit.x
-    file.y = file.fit.y
+    // create trim frame
+    file.trimX = file.trim.x
+    file.trimY = file.trim.y
+    file.trimW = file.trim.width
+    file.trimH = file.trim.height
 
-    // create pivot points
-    file.pX = ((file.trim.w * 0.5) - file.trim.x) / file.w
-    file.pY = (file.h - ((file.trim.h * 0.604) - file.trim.y)) / file.h
+    file.name = path.basename(file.path).match(/_(\d+\.png)$/)[1]
 
-    file.name = path.basename(file.path)
-
-    delete file.fit
     delete file.trim
   })
 
   exec(command.join(' '), err => {
     if(err) throw err
-    callback(null, files, canvasH)
+    callback(null, files)
   })
 }
 

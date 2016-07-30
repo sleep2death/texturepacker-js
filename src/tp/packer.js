@@ -27,8 +27,7 @@ module.exports = function texturepack(input, options, callback) {
 
       output(input, options, files, cb)
     },
-    function (files, height, cb) {
-      options.height = height // POT UPDATE
+    function (files, cb) {
       meta(files, options, cb)
     }
   ], callback)

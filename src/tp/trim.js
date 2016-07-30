@@ -1,6 +1,7 @@
 'use strict'
 
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
 
 const async = require('async')
@@ -43,7 +44,7 @@ function readDir(input, files, callback) {
       if(path.extname(image).toLowerCase() === '.png') files.push({
         name: path.basename(image, '.png'),
         iPath: `${input}/${image}`,
-        tPath: `${input}/trimmed/${image}`
+        tPath: `${os.tmpdir()}/tp_${(new Date()).getTime()}_${image}`
       })
     })
     callback(null, files)
@@ -52,9 +53,7 @@ function readDir(input, files, callback) {
 
 function trimImages(input, files, callback) {
   async.eachSeries(files, (file, next) => {
-    // file.tPath = path.join(os.tmpDir(), `${file.name}_trimmed.png`) // temp path for trimed file
-
-		// have to add 1px transparent border because imagemagick does trimming based on border pixel's color
+	// have to add 1px transparent border because imagemagick does trimming based on border pixel's color
     // only to list the result on what part of the image was trimmed, not the actual trimmed image
     // use alpha channel's crop area
 
@@ -84,18 +83,18 @@ function getTrimInfo(input, files, callback) {
       const size = item.match(/ ([0-9]+)x([0-9]+) /)
 
       file.x = file.y = 0
-      file.w = parseInt(size[1], 10)
-      file.h = parseInt(size[2], 10)
+      file.width = parseInt(size[1], 10)
+      file.height = parseInt(size[2], 10)
 
-      file.area = file.w * file.h
+      file.area = file.width * file.height
       // console.log(file.area)
 
       const rect = item.match(/ ([0-9]+)x([0-9]+)[\+\-]([0-9]+)[\+\-]([0-9]+) /)
       file.trim = {}
       file.trim.x = parseInt(rect[3], 10) - 1
       file.trim.y = parseInt(rect[4], 10) - 1
-      file.trim.w = parseInt(rect[1], 10) - 2
-      file.trim.h = parseInt(rect[2], 10) - 2
+      file.trim.width = parseInt(rect[1], 10) - 2
+      file.trim.height = parseInt(rect[2], 10) - 2
 
       file.path = item.match(/.+\.png/)[0]
 
