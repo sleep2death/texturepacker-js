@@ -3,17 +3,15 @@
 const fs = require('fs')
 
 module.exports = (files, options, callback) => {
-  const frames = []
+  const frames = {}
 
   files.forEach(file => {
-    const frame = {}
-    frame.framename = file.name
-    frame.rotated = false
-    frame.trimmed = true
-    frame.frame = {x: file.x, y: file.y, w: file.width, h: file.height}
-    frame.spriteSourceSize = {x: file.trimX, y: file.trimY, w: file.width, h: file.height}
-    frame.sourceSize = {w: file.trimW, h: file.trimH}
-    frames.push(frame)
+    frames[file.name] = {}
+    frames[file.name].rotated = false
+    frames[file.name].trimmed = true
+    frames[file.name].frame = {x: file.x, y: file.y, w: file.width, h: file.height}
+    frames[file.name].spriteSourceSize = {x: file.trimX, y: file.trimY, w: file.width, h: file.height}
+    frames[file.name].sourceSize = {w: file.trimW, h: file.trimH}
   })
 
   const meta = {
