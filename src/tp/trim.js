@@ -57,7 +57,7 @@ function trimImages(input, files, callback) {
     // only to list the result on what part of the image was trimmed, not the actual trimmed image
     // use alpha channel's crop area
 
-    exec(`convert -define png:exclude-chunks=date -resize ${RESIZE} ${file.iPath} -bordercolor transparent -border 1 -trim ${file.tPath}`, err => {
+    exec(`convert -define png:exclude-chunks=date ${file.iPath} -bordercolor transparent -border 1 -trim ${file.tPath}`, err => {
       if(err) throw err
       next()
     })

@@ -1,28 +1,39 @@
 'use strict'
 
 const fs = require('fs')
+const plist = require('plist')
 
 module.exports = (files, options, callback) => {
   const frames = {}
 
   files.forEach(file => {
     frames[file.name] = {}
-    frames[file.name].rotated = false
-    frames[file.name].trimmed = true
-    frames[file.name].frame = {x: file.x, y: file.y, w: file.width, h: file.height}
-    frames[file.name].spriteSourceSize = {x: file.trimX, y: file.trimY, w: file.width, h: file.height}
-    frames[file.name].sourceSize = {w: file.trimW, h: file.trimH}
+    // frames[file.name].rotated = false
+    // frames[file.name].trimmed = true
+    // frames[file.name].frame = {x: file.x, y: file.y, w: file.width, h: file.height}
+    // frames[file.name].spriteSourceSize = {x: file.trimX, y: file.trimY, w: file.width, h: file.height}
+    // frames[file.name].sourceSize = {w: file.trimW, h: file.trimH}
+    //
+    const offsetX = (file.width * 0.5) - ((file.trimW * 0.5) - file.trimX)
+    const offsetY = (file.height * 0.5) - ((file.trimH * 0.5) - file.trimY)
+
+    frames[file.name].spriteOffset = `{${offsetX},${offsetY}}`
+    frames[file.name].spriteSize = `{${file.width},${file.height}}`
+    frames[file.name].spriteSourceSize = `{${file.trimW},${file.trimH}}`
+    frames[file.name].textureRect = `{{${file.x},${file.y}},{${file.width},${file.height}}}`
+    frames[file.name].textureRotated = false
   })
 
   const meta = {
-    image: `${options.name}.png`,
-    format: 'RGB888',
-    size: {w: options.width, h: options.height},
-    scale: 1
+    premultiplyAlpha: false,
+    format: 3,
+    pixelFormat: 'RGB888',
+    realTextureFileName: options.name,
+    size: `{${options.width},${options.height}}`
   }
 
   const json = {frames, meta}
-  fs.writeFile(`${options.output}/${options.name}.json`, JSON.stringify(json, null, 2), err => {
+  fs.writeFile(`${options.output}/${options.name}.plist`, plist.build(json), err => {
     if(err) throw err
     callback()
   })
