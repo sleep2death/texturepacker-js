@@ -32,12 +32,6 @@ module.exports = (inputPath, callback) => {
 
 // read all png files from input path
 function readDir(input, files, callback) {
-  try {
-    fs.statSync(`${input}/trimmed`)
-  }catch(err) {
-    fs.mkdirSync(`${input}/trimmed`)
-  }
-
   fs.readdir(input, (err, images) => {
     if(err) throw err
     images.forEach(image => {

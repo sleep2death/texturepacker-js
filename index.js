@@ -86,8 +86,12 @@ function selectRole() {
 }
 
 function packRole(name, callback) {
-  configRole(name, PATH, PATH_OUTPUT, () => {
-    generateRole(name, PATH, PATH_OUTPUT, () => {
+  configRole(name, PATH, PATH_OUTPUT, config => {
+    config.name = name
+    config.input = PATH
+    config.output = PATH_OUTPUT
+
+    generateRole(config, () => {
       if(callback) callback()
     })
   })

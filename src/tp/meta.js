@@ -17,6 +17,7 @@ module.exports = (files, options, callback) => {
     const offsetX = (file.width * 0.5) - ((file.trimW * 0.5) - file.trimX)
     const offsetY = (file.height * 0.5) - ((file.trimH * 0.5) - file.trimY)
 
+    frames[file.name].aliases = []
     frames[file.name].spriteOffset = `{${offsetX},${offsetY}}`
     frames[file.name].spriteSize = `{${file.width},${file.height}}`
     frames[file.name].spriteSourceSize = `{${file.trimW},${file.trimH}}`
@@ -24,15 +25,16 @@ module.exports = (files, options, callback) => {
     frames[file.name].textureRotated = false
   })
 
-  const meta = {
+  const metadata = {
     premultiplyAlpha: false,
     format: 3,
     pixelFormat: 'RGB888',
-    realTextureFileName: options.name,
+    textureFileName: `${options.name}.pvr`,
+    realTextureFileName: `${options.name}.pvr`,
     size: `{${options.width},${options.height}}`
   }
 
-  const json = {frames, meta}
+  const json = {frames, metadata}
   fs.writeFile(`${options.output}/${options.name}.plist`, plist.build(json), err => {
     if(err) throw err
     callback()
