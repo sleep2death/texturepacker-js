@@ -29,14 +29,17 @@ module.exports = (input, options, callback) => {
   })
 
   function repack() {
-    const cmd = `TexturePacker --data ${options.output}/${options.name}.plist --max-size 1024 --format cocos2d --texture-format pvr3ccz --opt PVRTC4_NOALPHA --force-squared ${input}`
+    const name = (/(.+)(_a)$/).exec(options.name)[1]
+    const cmd = `TexturePacker --data ${options.output}/${name}.plist --replace \.png=-${options.character}-${name} --max-size 1024 --format cocos2d --texture-format pvr3ccz --disable-rotation --opt PVRTC4_NOALPHA --force-squared ${input}`
+
     exec(cmd, err => {
       if(err) throw err
 
-      md5.calculate(input, 'md5.chk', error => {
+      /* md5.calculate(input, 'md5.chk', error => {
         if(error) throw error
         callback()
-      })
+      })*/
+      callback()
     })
   }
 
